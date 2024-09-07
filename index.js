@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -35,6 +35,19 @@ async function run() {
       const result = await oderProductCollection.insertOne(newOderProduct);
       res.send(result);
     });
+
+    app.get('/oderProduct',async(req,res)=>{
+        const product = oderProductCollection.find();
+        const result = await product.toArray()
+        res.send(result)
+    })
+
+    app.delete('/oderProduct/:id',async(req,res)=>{
+        const id = req.params.id;
+        const query = {_id:new ObjectId(id)}
+        const result = await oderProductCollection.deleteOne(query);
+        res.send(result)
+    })
 
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
